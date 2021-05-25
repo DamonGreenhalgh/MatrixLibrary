@@ -20,7 +20,19 @@ public class Vector {
     }
 
     /* ACCESSORS/MUTATORS */
-    public String toString() {return vec.toString(); }
+    public String toString() {
+            String str = "[  ";
+            for (int i = 0; i < this.size; i++) {
+                Double val = vec.get(i);    
+                if (val % 1 == 0) {                                            // if val can be represented as an Integer
+                    str += Integer.toString((int)(Math.round(val))) + "  ";    // convert val to Integer for display
+                } else {                                                       // otherwise display as a Double value
+                    str += Double.toString(vec.get(i)) + "  ";
+                }
+                
+            }
+            return str + "]";
+        }
     public int getSize() { return size; }
     public void setElement(int index, Double val) { vec.set(index, val); }
     public Double getElement(int index) {return vec.get(index); }

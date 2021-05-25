@@ -24,8 +24,8 @@ public class Matrix{
             str += matrix.get(i).toString() + "\n";
         }
         return str;
-    
     }
+    
     /* ACCESSORS/MUTATORS */
     public Vector getRow(int index) {
         return matrix.get(index);
@@ -45,13 +45,13 @@ public class Matrix{
         }
     }
     /* This method adds two rows together */
-    public void addRow(int row1, int row2, double mult) {
+    public void addRow(int idx1, int idx2, double mult) {
         Double val1, val2;
         for (int i = 0; i < rows; i++) {
-            val1 = matrix.get(row1).getElement(i);           // operand 1
-            val2 = matrix.get(row2).getElement(i) * mult;    // operand 2
+            val1 = matrix.get(idx1).getElement(i) * mult;           // operand 1
+            val2 = matrix.get(idx2).getElement(i);    // operand 2
 
-            matrix.get(row1).setElement(i, val1 + val2);
+            matrix.get(idx2).setElement(i, val1 + val2);
         }
     }
     
