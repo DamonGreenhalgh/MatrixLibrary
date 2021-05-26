@@ -6,11 +6,20 @@ public class Run {
         myMatrix.setElement(0, 0, -1.2);
         myMatrix.setElement(0, 1, 2.5);
         myMatrix.setElement(0, 2,  3.0);
-        myMatrix.setElement(1, 0, 0.01);
-        myMatrix.setElement(1, 1, 42.9);
+        myMatrix.setElement(1, 0, 3.5);
+        myMatrix.setElement(1, 1, -3.0);
         myMatrix.setElement(1, 2, 12.0);
         myMatrix.setElement(2, 0, -4.0);
+        myMatrix.setElement(2, 1, 2.0);
+        myMatrix.setElement(2, 2, 1.0);
+
+        Vector row1 = myMatrix.getRow(0);
+        Vector row2 = myMatrix.getRow(1);
+        Vector row3 = myMatrix.getRow(2);
+
         System.out.println(myMatrix);
+        System.out.println(row2.dot(row3));
+        System.out.println(row3.length());
 
     }
     
