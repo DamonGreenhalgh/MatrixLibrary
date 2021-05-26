@@ -19,8 +19,17 @@ public class Run {
 
         System.out.println(myMatrix);
         System.out.println(row2.dot(row3));
-        System.out.println(row3.length());
+        System.out.println(row3.length() + "\n");
 
+        // row1.normalize();
+        // row2.normalize();
+        // row3.normalize();
+
+        //System.out.println(myMatrix);
+        //System.out.printf("%s, %s, %s", row1.length(), row2.length(), row3.length());
+
+        Matrix myTranspose = myMatrix.transpose();
+        System.out.println(myTranspose);
     }
     
 }

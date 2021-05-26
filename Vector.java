@@ -9,9 +9,9 @@ import java.lang.Math;
 
 public class Vector {
     /* FIELDS */
-    final static int DEFAULT_SIZE = 3;    // default R^3 space (0, 0, 0)
-    protected int size = DEFAULT_SIZE;
-    protected ArrayList<Double> vec = new ArrayList<Double>();
+    private final static int DEFAULT_SIZE = 3;    // default R^3 space (0, 0, 0)
+    private int size = DEFAULT_SIZE;
+    private ArrayList<Double> vec = new ArrayList<Double>();
 
     /* CONSTRUCTORS */
     public Vector(int size) {
@@ -31,12 +31,12 @@ public class Vector {
     // This method returns a string representation of the vector
     public String toString() {
         String str = "[  ";
-        for (int i = 0; i < this.size; i++) {
-            Double val = vec.get(i);    
+        for (int i = 0; i < size; i++) {
+            Double val = getElement(i);    
             if (val % 1 == 0) {                                            // if val can be represented as an integer
                 str += Integer.toString((int)(Math.round(val))) + "  ";    // convert val to integerr for display
             } else {                                                       // otherwise display as a double value
-                str += Double.toString(vec.get(i)) + "  ";
+                str += Double.toString(getElement(i)) + "  ";
             }
         }
         return str + "]";
@@ -45,11 +45,11 @@ public class Vector {
     // This method returns the dot product with respect to the parameter vector.
     public Double dot(Vector v) {
         Double dot = 0.0;
-        if (v.getSize() != this.size) {
+        if (v.getSize() != size) {
             return null;
         } else {
-            for (int i = 0; i < this.size; i++) {       // for each element
-                dot += vec.get(i) * v.getElement(i);    // the dot is the product of the two elements at i
+            for (int i = 0; i < size; i++) {       // for each element
+                dot += getElement(i) * v.getElement(i);    // the dot is the product of the two elements at i
             }
             return dot;
         }
@@ -58,11 +58,20 @@ public class Vector {
     // This method returns the length of the vector.
     public Double length() {
         Double length = 0.0;
-        for (int i = 0; i < this.size; i++) {       // for each element
-            length += Math.pow(vec.get(i), 2.0);    // add the square of the element to length
+        for (int i = 0; i < size; i++) {       // for each element
+            length += Math.pow(getElement(i), 2.0);    // add the square of the element to length
         }
         length = Math.sqrt(length);                 // squareroot the length
         return length;
     }
     
+    // This method normalizes the vector.
+    public void normalize() {
+        Double length = length();
+        Double val;
+        for (int i = 0; i < size; i++) {         // for each element
+            val = getElement(i);                 // get the element at i
+            setElement(i, val / length);         // new value is element / length
+        }
+    }
 }
