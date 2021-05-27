@@ -92,7 +92,7 @@ public class Matrix{
         }
     }
 
-    // This method returns the matrix object to a certain power.
+    // This method returns the matrix object to the parameter power.
     public Matrix pow(int power) {
         Matrix tmp = this;
         for (int i = 0; i < power - 1; i++) {

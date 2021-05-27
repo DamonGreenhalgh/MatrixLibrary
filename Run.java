@@ -64,29 +64,25 @@ public class Run {
         System.out.println(myMatrix3);
         System.out.println(myMatrix4);
 
-        System.out.println(myMatrix4.pow(10));
-
         /*
-        Matrix product = myMatrix2.multMat(myMatrix3);    // product matrix
+        System.out.println(myMatrix4.pow(10));    // power
+
+        Matrix product = myMatrix2.multMat(myMatrix3);    // product 
         System.out.print(product);
 
-        
-        Vector row1 = myMatrix.getRow(0);
+        Vector row1 = myMatrix.getRow(0);    // get row vectors
         Vector row2 = myMatrix.getRow(1);
         Vector row3 = myMatrix.getRow(2);
 
         System.out.println(myMatrix);
-        System.out.println(row2.dot(row3));
-        System.out.println(row3.length() + "\n");
+        System.out.println(row2.dot(row3));          // dot product
+        System.out.println(row3.length() + "\n");    // length
 
-        row1.normalize();
+        row1.normalize();    // normalized vectors
         row2.normalize();
         row3.normalize();
 
-        System.out.println(myMatrix);
-        System.out.printf("%s, %s, %s", row1.length(), row2.length(), row3.length());
-
-        Matrix myTranspose = myMatrix.transpose();
+        Matrix myTranspose = myMatrix.transpose();    // transpose
         System.out.println(myTranspose);
         */
     }
