@@ -20,8 +20,17 @@ public class Matrix{
 
     /* ACCESSORS/MUTATORS */
     public Vector getRow(int index) { return matrix.get(index); }                                               // returns a row vector
+    public Vector getColumn(int index) {
+        Vector column = new Vector(rows);
+        for (int i = 0; i < rows; i++) {
+            column.setElement(i, getElement(i, index));
+        }
+        return column;
+    }
     public Double getElement(int row, int column) { return matrix.get(row).getElement(column); }                // returns an element at mat[row, col]
     public void setElement(int row, int column, Double value) { matrix.get(row).setElement(column, value); }    // sets the value at mat[row, col] to a new value
+    public int getNumRows() { return rows; }                                                                    // returns the number of rows
+    public int getNumColumns() { return columns; }                                                              // returns the number of columns
 
     /* METHODS */
 
@@ -64,5 +73,25 @@ public class Matrix{
             }
         }
         return transpose;
+    }
+
+    // This method multiplies two matricies together.
+    public Matrix multMat(Matrix m) {
+        if (columns == m.getNumRows()) {    // must be n x m * m x l
+            Matrix mat = new Matrix(rows, m.getNumColumns());
+            
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < m.getNumColumns(); j++) {
+                    Vector column = m.getColumn(j);
+                    Vector row = getRow(i);
+                    mat.setElement(i, j, row.dot(column));
+                }
+            }
+            // multiply each corrosponding element
+            // set new matrix value
+            return mat;
+        } else {
+            return null;
+        }
     }
 }
