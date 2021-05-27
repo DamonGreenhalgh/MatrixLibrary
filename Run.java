@@ -4,6 +4,7 @@ public class Run {
         Matrix myMatrix = new Matrix(3, 3);
         Matrix myMatrix2 = new Matrix(4, 3);
         Matrix myMatrix3 = new Matrix(3, 5);
+        Matrix myMatrix4 = new Matrix(3, 3);
         
         // test matrix 1 (identity)
         myMatrix.setElement(0, 0, 1.0);
@@ -47,14 +48,29 @@ public class Run {
         myMatrix3.setElement(2, 3, -3.0);
         myMatrix3.setElement(2, 4, 1.0);
 
+        // test matrix 4, standard 3x3
+        myMatrix4.setElement(0, 0, 3.0);
+        myMatrix4.setElement(0, 1, 2.0);
+        myMatrix4.setElement(0, 2, -1.0);
+        myMatrix4.setElement(1, 0, 2.0);
+        myMatrix4.setElement(1, 1, 3.0);
+        myMatrix4.setElement(1, 2, -5.0);
+        myMatrix4.setElement(2, 0, 1.0);
+        myMatrix4.setElement(2, 1, 2.0);
+        myMatrix4.setElement(2, 2, 1.0);
+
         System.out.println(myMatrix);
         System.out.println(myMatrix2);
         System.out.println(myMatrix3);
+        System.out.println(myMatrix4);
 
+        System.out.println(myMatrix4.pow(10));
+
+        /*
         Matrix product = myMatrix2.multMat(myMatrix3);    // product matrix
         System.out.print(product);
 
-        /*
+        
         Vector row1 = myMatrix.getRow(0);
         Vector row2 = myMatrix.getRow(1);
         Vector row3 = myMatrix.getRow(2);

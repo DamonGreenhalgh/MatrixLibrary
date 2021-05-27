@@ -20,7 +20,7 @@ public class Matrix{
 
     /* ACCESSORS/MUTATORS */
     public Vector getRow(int index) { return matrix.get(index); }                                               // returns a row vector
-    public Vector getColumn(int index) {
+    public Vector getColumn(int index) {                                                                        // returns a column vector
         Vector column = new Vector(rows);
         for (int i = 0; i < rows; i++) {
             column.setElement(i, getElement(i, index));
@@ -77,21 +77,27 @@ public class Matrix{
 
     // This method multiplies two matricies together.
     public Matrix multMat(Matrix m) {
-        if (columns == m.getNumRows()) {    // must be n x m * m x l
+        if (columns == m.getNumRows()) {                           // must be n x m * m x l
             Matrix mat = new Matrix(rows, m.getNumColumns());
-            
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < m.getNumColumns(); j++) {
-                    Vector column = m.getColumn(j);
-                    Vector row = getRow(i);
-                    mat.setElement(i, j, row.dot(column));
+            for (int i = 0; i < mat.getNumRows(); i++) {
+                for (int j = 0; j < mat.getNumColumns(); j++) {    // for each element in the new mat matrix 
+                    Vector column = m.getColumn(j);                // get column matrix of parameter
+                    Vector row = getRow(i);                        // get row matrix of object
+                    mat.setElement(i, j, row.dot(column));         // dot the rows and columns to get the new element
                 }
             }
-            // multiply each corrosponding element
-            // set new matrix value
             return mat;
         } else {
             return null;
         }
+    }
+
+    // This method returns the matrix object to a certain power.
+    public Matrix pow(int power) {
+        Matrix tmp = this;
+        for (int i = 0; i < power - 1; i++) {
+            tmp = multMat(tmp);
+        }
+        return tmp;
     }
 }
