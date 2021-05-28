@@ -2,6 +2,8 @@
  * Author: Damon Greenhalgh
  * Description: This is a basic implementation of the matrix structure in mathematics.
 */
+
+
 import java.util.ArrayList;
 
 public class Matrix{
