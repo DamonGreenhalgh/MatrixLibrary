@@ -49,6 +49,13 @@ public class Vector {
         }
     }
 
+    // Scalar Add
+    public void add(Double val) {
+        for (int element = 0; element < size; element++) {
+            setElement(element, getElement(element) + val);    // add the parameter value to each element.
+        }
+    }
+
     // This method multiplies the vector by a scalar value
     public void mult(Double val) {
         for (int i = 0; i < size; i++) {
