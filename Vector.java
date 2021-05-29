@@ -4,7 +4,6 @@
  * Author: Damon Greenhalgh
  */
 
-
 import java.util.ArrayList;
 import java.lang.Math;
 
@@ -41,6 +40,20 @@ public class Vector {
             }
         }
         return str + "]";
+    }
+
+    // This method adds two vectors together
+    public void add(Vector v) {
+        for (int i = 0; i < size; i++) {
+            setElement(i, getElement(i) + v.getElement(i));
+        }
+    }
+
+    // This method multiplies the vector by a scalar value
+    public void mult(Double val) {
+        for (int i = 0; i < size; i++) {
+            setElement(i, getElement(i) * val);
+        }
     }
 
     // This method returns the dot product with respect to the parameter vector.
