@@ -20,8 +20,8 @@ Here you will find an overview of the library.
 `getNumColumns()` - returns the columns field.
 
 ### Methods 
-`multRow(int row1, double mult)` - multipies a row by a scaler.  
-`addRow(int row1, int row2, double mult)` - adds two rows together, can scale seconder operand.  
+`guassMult(int row1, double mult)` - multipies a row by a scaler.  
+`guassAdd(int row1, int row2, double mult)` - adds two rows together, can scale seconder operand.  
 `transpose()` - returns a new matrix which is the transpose of the orignal matrix.  
 `multMat(Matrix m)` - returns a new matrix which is the product of the orginal matrix and the parameter matrix.  
 `pow(int power)` - returns a new matrix, which is the original matrix to the power of the parameter.
@@ -42,9 +42,18 @@ Here you will find an overview of the library.
 `getElement(int index)` - returns the element at the parameter index.
 
 ### Methods
-`toString()` - returns a string representation of the vector.  
+`toString()` - returns a string representation of the vector.
 `getSize()` - returns the length of the vector as an integer.  
 `setElement(int index, Double val)` - edits an element of the vector.  
 `dot(Vector v)` - returns the dot product of the vector and the parameter vector.  
 `length()` - returns the length of the vector.  
 `normalize()` - normalizes the vector to have length 1.
+
+## Todo
++ Guassian Elimination
++ Determinant
++ Gram Schmidt Orthogonalization
++ Eigenvalues
++ Eigenvectors
++ Submatrix
++ Inverse
