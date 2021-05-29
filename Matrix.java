@@ -45,7 +45,7 @@ public class Matrix{
     }
 
     // This method multipies a row by a scalar value.
-    public void multRow(int index, Double mult) {
+    public void guassMult(int index, Double mult) {
         Double val;
         for (int i = 0; i < rows; i++) {
             val = getRow(i).getElement(i) * mult;    // multiply the element by value
@@ -54,7 +54,7 @@ public class Matrix{
     }
 
     // This method adds two rows together, the result replaces the second parameter row.
-    public void addRow(int idx1, int idx2, double mult) {
+    public void guassAdd(int idx1, int idx2, double mult) {
         Double val1, val2;
         if (mult != 0) {                                     // must be multiplied by a non-zero value
             for (int i = 0; i < rows; i++) {
@@ -62,6 +62,21 @@ public class Matrix{
                 val2 = getRow(idx2).getElement(i);           // operand 2
                 getRow(idx2).setElement(i, val1 + val2);
             }
+        }
+    }
+
+    // This method multiplies the matrix by a scalar value.
+    public void multScal(Double val) {
+        for (int row = 0; row < rows; row++) {
+            getRow(row).mult(val);
+        }
+    }
+
+    // This method adds two matricies together.
+    public void addMat(Matrix m) {
+
+        for (int row = 0; row < rows; row++) {
+            getRow(row).add(m.getRow(row));
         }
     }
 

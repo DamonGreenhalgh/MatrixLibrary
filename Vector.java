@@ -62,7 +62,7 @@ public class Vector {
         if (v.getSize() != size) {
             return null;
         } else {
-            for (int i = 0; i < size; i++) {       // for each element
+            for (int i = 0; i < size; i++) {               // for each element
                 dot += getElement(i) * v.getElement(i);    // the dot is the product of the two elements at i
             }
             return dot;

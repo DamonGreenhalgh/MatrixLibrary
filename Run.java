@@ -64,6 +64,12 @@ public class Run {
         System.out.println(myMatrix3);
         System.out.println(myMatrix4);
 
+        myMatrix.addMat(myMatrix4);    // matrix add
+        System.out.println(myMatrix);
+
+        myMatrix.multScal(-3.5);    // scalar multiply
+        System.out.println(myMatrix);
+
         /*
         System.out.println(myMatrix4.pow(10));    // power
 
