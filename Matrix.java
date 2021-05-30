@@ -53,19 +53,6 @@ public class Matrix{
         }
     }
 
-    // Row Addition
-    // This overloaded method adds two rows together, the result overwrites the second parameter row.
-    public void add(int idx1, int idx2, double mult) {
-        Double val1, val2;
-        if (mult != 0) {                                     // must be multiplied by a non-zero value
-            for (int i = 0; i < rows; i++) {
-                val1 = getRow(idx1).getElement(i) * mult;    // operand 1
-                val2 = getRow(idx2).getElement(i);           // operand 2
-                getRow(idx2).setElement(i, val1 + val2);
-            }
-        }
-    }
-    
     // Matrix Addition
     // This overloaded method adds the matrix with the parameter matrix.
     public void add(Matrix m) {
@@ -80,19 +67,6 @@ public class Matrix{
         for (int row = 0; row < rows; row++) {
             getRow(row).mult(val);
         }
-    }
-
-    // Row Multiplication
-    // This method multipies a row by a scalar value. 
-    public void mult(int index, Double mult) {
-        Double val;
-        if (mult != 0.0) {
-            for (int i = 0; i < rows; i++) {
-                val = getRow(i).getElement(i) * mult;    // multiply the element by value
-                getRow(index).setElement(i, val);        // set new value
-            }
-        }
-
     }
 
     // Matrix Multiplication
@@ -128,10 +102,65 @@ public class Matrix{
     // Power
     // This method returns the matrix object to the parameter power.
     public Matrix pow(int power) {
-        Matrix tmp = this;
+        Matrix pow = this;
         for (int i = 0; i < power - 1; i++) {
-            tmp = mult(tmp);
+            pow = mult(pow);
         }
-        return tmp;
+        return pow;
+    }
+
+    // Eliminate
+    // This method adds two rows together, the result overwrites the second parameter row.
+    public void eliminate(int idx1, int idx2, double mult) {
+        Double val1, val2;
+        if (mult != 0) {                                     // must be multiplied by a non-zero value
+            for (int i = 0; i < columns; i++) {
+                val1 = getRow(idx1).getElement(i) * mult;    // operand 1
+                val2 = getRow(idx2).getElement(i);           // operand 2
+                getRow(idx2).setElement(i, val1 + val2);
+            }
+        }
+    }
+
+    // Guassian Elimination
+    // This method reduces the matrix to reduced row echelon form.
+    public void rref() {
+        /** Algorithm
+         *  ---------
+         *  - Iterate through each column of the matrix.
+         *  - Find the pivot of the column vector if it exists.
+         *  - If the pivot exists. 
+         *  - Eliminate every non-pivot entry of the column.
+         */
+
+        // This ArrayList is used to hold the pivot indices that have been selected.
+        ArrayList<Integer> pivots = new ArrayList<Integer>();
+
+        // Iterate through each column
+        for (int columnIndex = 0; columnIndex < columns; columnIndex++) {
+
+            // Find the pivot
+            Vector column = getColumn(columnIndex);
+            int pivotIndex = column.getPivot(pivots); 
+            
+            // Check there exists a pivot for the column
+            if (pivotIndex != -1) {
+
+                // Set the pivot value to be 1
+                Vector pivotRow = getRow(pivotIndex);
+                Double pivotElement = pivotRow.getElement(columnIndex);
+                pivotRow.mult(1/pivotElement);
+                
+                // Eliminate each element in the column vector
+                for (int rowIndex = 0; rowIndex < rows; rowIndex++) {
+
+                    // do not eliminate pivot
+                    if (rowIndex != pivotIndex) {    
+                        Double mult = column.getElement(rowIndex);
+                        eliminate(pivotIndex, rowIndex, -mult);
+                    }
+                }
+            }
+        }
     }
 }

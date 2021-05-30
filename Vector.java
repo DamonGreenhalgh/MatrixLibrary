@@ -28,6 +28,7 @@ public class Vector {
 
     /* METHODS */
     
+    // String Representation
     // This method returns a string representation of the vector
     public String toString() {
         String str = "[  ";
@@ -42,20 +43,24 @@ public class Vector {
         return str + "]";
     }
 
-    // This method adds two vectors together
+    // Vector Addition
+    // This method adds two vectors together.
     public void add(Vector v) {
         for (int i = 0; i < size; i++) {
             setElement(i, getElement(i) + v.getElement(i));
         }
     }
 
-    // Scalar Add
+    // Scalar Addition
+    // This method adds the scalar parameter value to each element of this vector.
+    // Note: This is equivalent to vector addition where the parameter is the same size as this vector.
     public void add(Double val) {
         for (int element = 0; element < size; element++) {
             setElement(element, getElement(element) + val);    // add the parameter value to each element.
         }
     }
 
+    // Scalar Multiplication
     // This method multiplies the vector by a scalar value
     public void mult(Double val) {
         for (int i = 0; i < size; i++) {
@@ -63,6 +68,7 @@ public class Vector {
         }
     }
 
+    // Dot Product
     // This method returns the dot product with respect to the parameter vector.
     public Double dot(Vector v) {
         Double dot = 0.0;
@@ -76,6 +82,7 @@ public class Vector {
         }
     }
 
+    // Length
     // This method returns the length of the vector.
     public Double length() {
         Double length = 0.0;
@@ -86,13 +93,26 @@ public class Vector {
         return length;
     }
     
+    // Normalize
     // This method normalizes the vector.
     public void normalize() {
         Double length = length();
-        Double val;
-        for (int i = 0; i < size; i++) {         // for each element
-            val = getElement(i);                 // get the element at i
-            setElement(i, val / length);         // new value is element / length
+        mult(1/length);
+    }
+
+    // Pivot
+    // This method returns the pivot index of the vector.
+    public int getPivot(ArrayList<Integer> pivots) {
+
+        // Iterate through each element in the vector
+        for (int index = 0; index < size; index++) { 
+
+            // Check for an element that is non-zero and has not been a pivot before.
+            if (getElement(index) != 0.0 && !pivots.contains(index)) {          
+                pivots.add(index);
+                return index;
+            }
         }
+        return -1;    // pivot does not exit, vector is zero vector
     }
 }
