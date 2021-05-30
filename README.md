@@ -42,7 +42,7 @@ Here you will find an overview of the library.
 `getElement(int index)` - returns the element at the parameter index.
 
 ### Methods
-`toString()` - returns a string representation of the vector.
+`toString()` - returns a string representation of the vector.  
 `getSize()` - returns the length of the vector as an integer.  
 `setElement(int index, Double val)` - edits an element of the vector.  
 `dot(Vector v)` - returns the dot product of the vector and the parameter vector.  
