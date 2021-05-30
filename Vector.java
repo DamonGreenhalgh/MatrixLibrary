@@ -29,16 +29,29 @@ public class Vector {
     /* METHODS */
     
     // String Representation
-    // This method returns a string representation of the vector
+    // This method returns a string representation of the vector        
     public String toString() {
         String str = "[  ";
         for (int i = 0; i < size; i++) {
             Double val = getElement(i);    
-            if (val % 1 == 0) {                                            // if val can be represented as an integer
-                str += Integer.toString((int)(Math.round(val))) + "  ";    // convert val to integerr for display
-            } else {                                                       // otherwise display as a double value
-                str += Double.toString(getElement(i)) + "  ";
+            String tmp = String.format("%.5f", val);
+
+            // Remove the redundant 0 digits.
+            while (true) {
+                // Get the last digit.
+                String lastDigit = tmp.substring(tmp.length() - 1, tmp.length()); 
+                // Check if the last digit is a 0.
+                if (lastDigit.equals("0")) {
+                    tmp = tmp.substring(0, tmp.length() - 1);
+                } else {
+                    // Check if the val is an integer.
+                    if (lastDigit.equals(".")) {
+                        tmp = tmp.substring(0, tmp.length() - 1);
+                    }
+                    break;
+                }
             }
+            str += tmp + "  "; 
         }
         return str + "]";
     }
