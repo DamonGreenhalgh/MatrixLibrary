@@ -36,16 +36,21 @@ public class Vector {
             Double val = getElement(i);    
             String tmp = String.format("%.5f", val);
 
-            // Remove the redundant 0 digits.
+            // Display formating.
             while (true) {
                 // Get the last digit.
                 String lastDigit = tmp.substring(tmp.length() - 1, tmp.length()); 
+
+                // Remove redundant 0's.
                 // Check if the last digit is a 0.
                 if (lastDigit.equals("0")) {
                     tmp = tmp.substring(0, tmp.length() - 1);
                 } else {
-                    // Check if the val is an integer.
-                    if (lastDigit.equals(".")) {
+                    // Check if val is 0.
+                    if (tmp.substring(tmp.length() - 2, tmp.length() - 1).equals("0")) {
+                        tmp = tmp.substring(tmp.length() - 2, tmp.length() - 1);
+                    } else {
+                        // Integer
                         tmp = tmp.substring(0, tmp.length() - 1);
                     }
                     break;
@@ -121,11 +126,21 @@ public class Vector {
         for (int index = 0; index < size; index++) { 
 
             // Check for an element that is non-zero and has not been a pivot before.
-            if (getElement(index) != 0.0 && !pivots.contains(index)) {          
-                pivots.add(index);
+            if (!(Math.abs(getElement(index)) < 0.001) && !(pivots.contains(index))) {          
                 return index;
             }
         }
         return -1;    // pivot does not exit, vector is zero vector
+    }
+
+    // Zero
+    // This method returns a boolean, true if zero vector false otherwise.
+    public boolean isZero() {
+        for (int index = 0; index < size; index++) {
+            if (!(Math.abs(getElement(index)) < 0.001)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

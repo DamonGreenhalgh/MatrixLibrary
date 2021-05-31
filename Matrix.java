@@ -4,11 +4,14 @@
 */
 
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
+import java.lang.Math;
 
 public class Matrix{
     /* FIELDS */
     protected ArrayList<Vector> matrix = new ArrayList<Vector>();    // the matrix is made up of an arraylist of arraylists
     protected int rows, columns;
+    protected ArrayList<Integer> pivots = new ArrayList<Integer>();
 
     /* CONSTRUCTORS */
     public Matrix(int rows, int columns) {
@@ -122,7 +125,7 @@ public class Matrix{
         }
     }
 
-    // Guassian Elimination
+    // Gasssian Elimination
     // This method reduces the matrix to reduced row echelon form.
     public void rref() {
         /** Algorithm
@@ -132,9 +135,6 @@ public class Matrix{
          *  - If the pivot exists. 
          *  - Eliminate every non-pivot entry of the column.
          */
-
-        // This ArrayList is used to hold the pivot indices that have been selected.
-        ArrayList<Integer> pivots = new ArrayList<Integer>();
 
         // Iterate through each column
         for (int columnIndex = 0; columnIndex < columns; columnIndex++) {
@@ -146,21 +146,43 @@ public class Matrix{
             // Check there exists a pivot for the column
             if (pivotIndex != -1) {
 
-                // Set the pivot value to be 1
+                // Add pivotIndex to pivots
+                pivots.add(pivotIndex);
+
+                // Set the pivot element to 1 through row operation
                 Vector pivotRow = getRow(pivotIndex);
                 Double pivotElement = pivotRow.getElement(columnIndex);
                 pivotRow.mult(1/pivotElement);
                 
-                // Eliminate each element in the column vector
+                // Eliminate each non-pivot element in the column
                 for (int rowIndex = 0; rowIndex < rows; rowIndex++) {
 
-                    // do not eliminate pivot
+                    // Do not eliminate pivot
                     if (rowIndex != pivotIndex) {    
                         Double mult = column.getElement(rowIndex);
                         eliminate(pivotIndex, rowIndex, -mult);
+                        
                     }
+                    
                 }
             }
         }
     }
+
+    // Rank
+    // This method returns the rank of the matrix.
+    public int rank() {
+        return pivots.size();
+    }
+
+    // Random
+    // This method randomises each element of the matrix.
+    public void random() {
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                setElement(row, column, Double.valueOf(ThreadLocalRandom.current().nextInt()));
+            }
+        }
+    }
+
 }
