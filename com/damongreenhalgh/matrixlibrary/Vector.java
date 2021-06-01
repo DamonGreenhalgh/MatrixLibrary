@@ -1,8 +1,10 @@
-/* Class: Vector
- * Description: Basic implementation of a vector mathematical structure, 
- * the vector is real-valued, and transpose.
- * Author: Damon Greenhalgh
+/**
+ * Matrix Package for Java
+ * Vector Class
+ * @author Damon Greenhalgh
  */
+
+package com.damongreenhalgh.matrixlibrary;
 
 import java.util.ArrayList;
 import java.lang.Math;

@@ -1,7 +1,10 @@
 /**
  * Matrix Package for Java
+ * Matrix Class
  * @author Damon Greenhalgh
  */
+
+package com.damongreenhalgh.matrixlibrary;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
