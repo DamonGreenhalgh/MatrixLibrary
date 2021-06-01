@@ -1,6 +1,7 @@
 /**
  * Matrix Package for Java
- * Matrix Class
+ * @class Matrix
+ * @description Matrix class that creates matrix objects with useful methods.
  * @author Damon Greenhalgh
  */
 
@@ -11,48 +12,61 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Matrix{
 
-    /**
-     * FIELDS
-     * ------
-     */
+    /** FIELDS */
 
-    /**
-     * The matrix structure is an ArrayList with Vectors as its 
-     * elements.
-     */
+    // Default fields 
+    static private int DEFAULT_SIZE = 3;
+    static private MatrixType DEFAULT_TYPE = MatrixType.DEFAULT;
+
+    protected int rows = DEFAULT_SIZE;
+    protected int columns = DEFAULT_SIZE;
+    protected MatrixType type = DEFAULT_TYPE;
+
     protected ArrayList<Vector> matrix = new ArrayList<Vector>();   
-
-    /**
-     * Holds the indices of pivots of the matrix.
-     */
     protected ArrayList<Integer> pivots = new ArrayList<Integer>();
 
+
+    /** CONSTRUCTORS */
+
+    /**
+     * Default
+     * This is the non-arg constructor. 
+     */
+    public Matrix() { create(rows, columns, type); }
+
     /** 
-     * The number of rows and columns in the matrix
-     */
-    protected int rows, columns;
-
-
-    /**
-     * CONSTRUCTORS
-     * ------------
-     */
-
-    /**
-     * This overloaded constructor initializes a 
-     * n x m zero matrix based on the parameters.
+     * Type
+     * This overloaded constructor creates a preset matrix based on the parameter.
+     * MatrixType.
      * 
-     * @param rows the number of rows (n)
-     * @param columns the number of columns (m)
+     * @param rows the number of rows
+     * @param columns the number of columns
+     * @param type the type of matrix
      */
-    public Matrix(int rows, int columns) {
-        this.rows = rows;
-        this.columns = columns;
-        for (int i = 0; i < rows; i++) {
-            matrix.add(new Vector(columns));
+    public Matrix(int rows, int columns, MatrixType type) {
+        create(rows, columns, type);
+
+        switch (type) {
+            case IDENTITY: {
+                if (rows == columns) {    // must be nxn matrix
+                    for (int i = 0; i < rows; i++) {
+                        setElement(i, i, 1.0);
+                    }
+                }
+                break;
+            } case RANDOM: {
+                for (int row = 0; row < rows; row++) {
+                    for (int column = 0; column < columns; column++) {
+                        setElement(row, column, Double.valueOf(ThreadLocalRandom.current().nextInt(-100, 100)));
+                    }
+                }
+                break;
+            } case DEFAULT: {
+                break;
+            }
         }
     }
-
+    
     /**
      * Clone
      * This overloaded constructor clones the parameter 
@@ -61,13 +75,7 @@ public class Matrix{
      * @param m the matrix to clone
      */
     public Matrix(Matrix m) {
-        this.rows = m.getNumRows();
-        this.columns = m.getNumColumns();
-        
-        // Build the 0 matrix
-        for(int row = 0; row < rows; row++) {
-            matrix.add(new Vector(columns));
-        }
+        create(m.getNumRows(), m.getNumColumns(), m.getMatrixType());
 
         // Set each element
         for (int row = 0; row < rows; row++) {
@@ -77,11 +85,22 @@ public class Matrix{
         }
     }
 
-
     /**
-     * ACCESSORS / MUTATORS
-     * --------------------
+     * Create
+     * This helper method creates a new rows x columns zero matrix.
      */
+    public void create(int rows, int columns, MatrixType type) {
+        this.rows = rows;
+        this.columns = columns;
+        this.type = type;
+
+        for (int row = 0; row < rows; row++) {
+            matrix.add(new Vector(columns));
+        }
+    }
+
+
+    /** ACCESSORS / MUTATORS */
     
     /**
      * Get Row
@@ -149,11 +168,19 @@ public class Matrix{
      */
     public int getNumColumns() { return columns; }
 
-
     /**
-     * METHODS
-     * -------
+     * Get Matrix Type
+     * This method returns the matrix type of 
+     * the matrix.
+     * 
+     * @return the type of matrix
      */
+    public MatrixType getMatrixType() {
+        return type;
+    }
+
+
+    /** METHODS */
 
     /**
      * String Representation
@@ -219,7 +246,7 @@ public class Matrix{
      */
     public Matrix mult(Matrix m) {
         if (columns == m.getNumRows()) {                           // must be n x m * m x l
-            Matrix mat = new Matrix(rows, m.getNumColumns());
+            Matrix mat = new Matrix(rows, m.getNumColumns(), MatrixType.DEFAULT);
             for (int i = 0; i < mat.getNumRows(); i++) {
                 for (int j = 0; j < mat.getNumColumns(); j++) {    // for each element in the new mat matrix 
                     Vector column = m.getColumn(j);                // get column matrix of parameter
@@ -241,7 +268,7 @@ public class Matrix{
      * @return the transpose
      */
     public Matrix transpose() {
-        Matrix transpose = new Matrix(columns, rows);            // create new matrix
+        Matrix transpose = new Matrix(columns, rows, MatrixType.DEFAULT);            // create new matrix
         for (int i = 0; i < columns; i++) {                      
             for (int j = 0; j < rows; j++) {                     // iterate through each value 
                 transpose.setElement(j, i, getElement(i, j));    // set the value of trans[i, j] = mat[j, i]
@@ -378,17 +405,4 @@ public class Matrix{
         // Return the number of pivots
         return clone.pivots.size();
     }
-
-    /**
-     * Random
-     * This method randomises each element in the matrix.
-     */
-    public void random() {
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
-                setElement(row, column, Double.valueOf(ThreadLocalRandom.current().nextInt()));
-            }
-        }
-    }
-
 }

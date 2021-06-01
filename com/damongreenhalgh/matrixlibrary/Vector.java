@@ -1,6 +1,6 @@
 /**
  * Matrix Package for Java
- * Vector Class
+ * @class Vector
  * @author Damon Greenhalgh
  */
 
