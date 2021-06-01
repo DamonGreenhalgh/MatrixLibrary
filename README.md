@@ -20,11 +20,11 @@ Here you will find an overview of the library.
 `getNumColumns()` - returns the columns field.
 
 ### Methods 
-`guassMult`(int row1, double mult)` - multipies a row by a scaler.  
-`guassAdd`(int row1, int row2, double mult)` - adds two rows together, can scale seconder operand.  
+`eliminate(int row1, int row2, double mult)` - adds two rows together, can scale seconder operand.  
 `transpose()` - returns a new matrix which is the transpose of the orignal matrix.  
-`multMat(Matrix m)` - returns a new matrix which is the product of the orginal matrix and the parameter matrix.  
-`pow(int power)` - returns a new matrix, which is the original matrix to the power of the parameter.
+`mult(Matrix m)` - returns a new matrix which is the product of the orginal matrix and the parameter matrix.  
+`pow(int power)` - returns a new matrix, which is the original matrix to the power of the parameter.  
+`rref()` - reduces the matrix into Reduced Row Echelon Form applying Gaussian Elimination.
 
 
 ## Vector Class
@@ -50,7 +50,6 @@ Here you will find an overview of the library.
 `normalize()` - normalizes the vector to have length 1.
 
 ## Todo
-+ Guassian Elimination
 + Determinant
 + Gram Schmidt Orthogonalization
 + Eigenvalues
