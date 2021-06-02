@@ -6,7 +6,7 @@
  * @author Damon Greenhalgh
  */
 
-package com.damongreenhalgh.matrixlibrary;
+package com.damongreenhalgh.matrixpackage;
 
 public enum MatrixType {
     DEFAULT,

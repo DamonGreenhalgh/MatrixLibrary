@@ -4,7 +4,7 @@
  * @author Damon Greenhalgh
  */
 
-package com.damongreenhalgh.matrixlibrary;
+package com.damongreenhalgh.matrixpackage;
 
 import java.util.ArrayList;
 import java.lang.Math;
