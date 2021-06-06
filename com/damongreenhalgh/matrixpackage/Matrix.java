@@ -362,14 +362,18 @@ public class Matrix{
 
     /** Join
      *  This method appends the parameter object to the matrix.
-     *  @param Object obj
+     *  @param m
      */
-    public void join(Object obj) {
+    public void join(Matrix m) {
         /** The object could be of type Vector
          *  or of type Matrix, reguardless this method will
          *  append it to the end of the matrix.
          */
-
+        if (rows == m.getNumRows()) {
+            for(int i = 0; i < m.getNumRows(); i++) {
+                getRow(i).join(m.getRow(i));
+            }
+        }
 
     }
 

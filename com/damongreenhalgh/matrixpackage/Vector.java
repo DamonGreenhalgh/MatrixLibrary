@@ -145,4 +145,18 @@ public class Vector {
         }
         return true;
     }
+
+    /**
+     * Join
+     * This method adds a new element to the vector.
+     */
+    public void join(Double value) {
+        vec.add(value);
+        size++;
+    }
+    public void join(Vector vec) {
+        for(int i = 0; i < vec.size; i++) {
+            join(vec.getElement(i));
+        }
+    }
 }
