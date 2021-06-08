@@ -198,24 +198,21 @@ public class Matrix{
     }
 
     /**
-     * Scalar Addition
-     * This overloaded method adds a scalar value to each 
-     * element of the matrix.
+     * Addition
+     * This method adds the parameter scalar to the matrix.
      * 
-     * @param val the scalar value
+     * @param d    the scalar to add.
      */
-    public void add(Double val) {
+    public void add(Double d) {
         for (int row = 0; row < rows; row++) {
-            getRow(row).add(val);
+            getRow(row).add(d);
         }
     }
-
     /**
-     * Matrix Addition
-     * This overloaded method applies matrix addition to 
-     * the object.
+     * Addition
+     * This method adds the parameter matrix with this object.
      * 
-     * @param m the matrix to add
+     * @param m    the matrix to add.
      */
     public void add(Matrix m) {
         for (int row = 0; row < rows; row++) {
@@ -228,21 +225,39 @@ public class Matrix{
      * This overloaded method applies scalar multiplication to this
      * object.
      * 
-     * @param val the scalar value
+     * @param val    the scalar value
      */
     public void mult(Double val) {
         for (int row = 0; row < rows; row++) {
             getRow(row).mult(val);
         }
     }
+    /**
+     * Vector Multiplication
+     * This overloaded method applies vector multiplication to this
+     * object.
+     * 
+     * @param v           the vector to multiply with
+     * @return result     the product vector
+     */
+    public Vector mult(Vector v) {
+        if (columns == v.getSize()) {
+            Vector result = new Vector(rows);
 
+            for (int row = 0; row < rows; row++) {
+                result.setElement(row, getRow(row).dot(v));
+            } 
+            return result;
+        }
+        return null;
+    }
     /**
      * Matrix Multiplication
      * This overloaded method applies matrix multiplication to
      * this object.
      * 
-     * @param m the matrix to multiply
-     * @return mat the product of the two matricies
+     * @param m       the matrix to multiply
+     * @return mat    the product matrix
      */
     public Matrix mult(Matrix m) {
         if (columns == m.getNumRows()) {                           // must be n x m * m x l
@@ -255,9 +270,8 @@ public class Matrix{
                 }
             }
             return mat;
-        } else {
-            return null;
-        }
+        } 
+        return null;
     }
 
     /**
@@ -315,20 +329,21 @@ public class Matrix{
 
     /**
      * Reduced Row Echelon Form (RREF)
-     * This method reduces the matrix to rref, through the use
-     * of Gaussian Elimination
+     * This method reduces the matrix to Reduced Row Echelon Form, by method
+     * of Gaussian Elimination.
+     * 
+     * @param index the column to stop row reducing.
      */
-    public void rref() {
+    public void rref(int index) {
         /** Algorithm
          *  ---------
          *  - Iterate through each column of the matrix.
          *  - Find the pivot of the column vector if it exists.
-         *  - If the pivot exists. 
          *  - Eliminate every non-pivot entry of the column.
          */
 
         // Iterate through each column
-        for (int columnIndex = 0; columnIndex < columns; columnIndex++) {
+        for (int columnIndex = 0; columnIndex < index; columnIndex++) {
 
             // Find the pivot
             Vector column = getColumn(columnIndex);
@@ -360,26 +375,43 @@ public class Matrix{
         }
     }
 
-    /** Join
-     *  This method appends the parameter object to the matrix.
-     *  @param m
+    /** 
+     * Join
+     * This method appends the parameter matrix to the object. For example
+     * adding a 3x3 matrix to a 3x5 matrix will result in a 3x8 matrix.
+     * 
+     * @param m    the matrix to append.
      */
-    public void join(Matrix m) {
-        /** The object could be of type Vector
-         *  or of type Matrix, reguardless this method will
-         *  append it to the end of the matrix.
-         */
-        if (rows == m.getNumRows()) {
+    public void append(Matrix m) {
+        if (m.getNumRows() == rows) {
+            columns += m.getNumColumns();
             for(int i = 0; i < m.getNumRows(); i++) {
-                getRow(i).join(m.getRow(i));
+                getRow(i).append(m.getRow(i));
             }
         }
-
+    }
+    /**
+     * Join
+     * This method append the parameter vector to the object. For example
+     * adding a vector to a 3x3 matrix gives a 3x4 matrix.
+     * 
+     * @param v    the vector to append
+     */
+    public void append(Vector v) {
+        if (v.getSize() == rows) {
+            columns++;                                 // increase the number of columns
+            for (int i = 0; i < v.getSize(); i++) {    // for each row vector, append new value
+                getRow(i).append(v.getElement(i));
+            }
+        }
     }
 
-    /** Solve 
-     *  This method returns a vector which is a solution of the matrix
-     *  @param Vector v
+    /** 
+     * Solve 
+     * This method returns a vector which is a solution of the matrix
+     * in the formAx = b.
+     * 
+     *  @param b    the result of the product
      */
     public Vector solve(Vector v) {
         /** Algorithim
@@ -389,22 +421,29 @@ public class Matrix{
          *  - RREF the matrix, not including the final column.
          *  - Return the final column as the solution of the matrix
          */
-        
-        
-        return null;
+        Matrix clone = new Matrix(this);
+        clone.append(v);
+        clone.rref(columns);
+        Vector b = new Vector(rows);
+        System.out.println(clone);
+        for (int i = 0; i < rows; i++) {
+            b.setElement(i, clone.getElement(i, rows));
+        }
+        return b;
     }
 
     /**
      * Rank
      * This method returns the rank of the matrix.
-     * @return
+     * 
+     * @return    the rank of the matrix.
      */
     public int rank() {
         // Clone matrix
         Matrix clone = new Matrix(this);
 
         // Row reduce clone
-        clone.rref();
+        clone.rref(columns);
 
         // Return the number of pivots
         return clone.pivots.size();

@@ -150,13 +150,13 @@ public class Vector {
      * Join
      * This method adds a new element to the vector.
      */
-    public void join(Double value) {
+    public void append(Double value) {
         vec.add(value);
         size++;
     }
-    public void join(Vector vec) {
+    public void append(Vector vec) {
         for(int i = 0; i < vec.size; i++) {
-            join(vec.getElement(i));
+            append(vec.getElement(i));
         }
     }
 }

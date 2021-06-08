@@ -56,3 +56,8 @@ Here you will find an overview of the library.
 + Eigenvectors
 + Submatrix
 + Inverse
+
+# Minimal
++ Inverse 
++ Solve
+
