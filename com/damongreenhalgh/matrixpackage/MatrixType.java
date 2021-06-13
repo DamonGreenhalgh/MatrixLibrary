@@ -12,4 +12,5 @@ public enum MatrixType {
     DEFAULT,
     IDENTITY,
     RANDOM,
+    ONE
 }

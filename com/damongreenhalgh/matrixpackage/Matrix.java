@@ -36,15 +36,15 @@ public class Matrix{
 
     /** 
      * Type
-     * This overloaded constructor creates a preset matrix based on the parameter.
+     * This overloaded constructor creates a preset matrix based on the parameter
      * MatrixType.
      * 
-     * @param rows the number of rows
-     * @param columns the number of columns
-     * @param type the type of matrix
+     * @param rows       the number of rows
+     * @param columns    the number of columns
+     * @param type       the type of matrix
      */
     public Matrix(int rows, int columns, MatrixType type) {
-        create(rows, columns, type);
+        create(rows, columns, type);    // call helper function
 
         switch (type) {
             case IDENTITY: {
@@ -61,6 +61,9 @@ public class Matrix{
                     }
                 }
                 break;
+            } case ONE: {
+                add(1.0);
+                break;
             } case DEFAULT: {
                 break;
             }
@@ -72,7 +75,7 @@ public class Matrix{
      * This overloaded constructor clones the parameter 
      * matrix.
      * 
-     * @param m the matrix to clone
+     * @param m    the matrix to clone
      */
     public Matrix(Matrix m) {
         create(m.getNumRows(), m.getNumColumns(), m.getMatrixType());
@@ -241,7 +244,7 @@ public class Matrix{
      * @return result     the product vector
      */
     public Vector mult(Vector v) {
-        if (columns == v.getSize()) {
+        if (columns == v.getSize()) {    // check mxn * nxl matrix
             Vector result = new Vector(rows);
 
             for (int row = 0; row < rows; row++) {
