@@ -6,7 +6,8 @@
  * @author Damon Greenhalgh
  * 
  * @todo
- * - rref
+ * - solution
+ * - determinant
  */
 
 package com.damongreenhalgh.matrixpackage;
@@ -18,6 +19,7 @@ public class Matrix {
 
     private double[][] matrix;
     private int rows, columns;
+    private int rank;
 
     // Constructors
     /**
@@ -32,6 +34,15 @@ public class Matrix {
      * @param columns    the number of columns
      */
     public Matrix(int rows, int columns) { create(rows, columns); }
+    /**
+     * Creates a matrix based on a 2-dimensional array.
+     * 
+     * @param array
+     */
+    public Matrix(double[][] array) {
+        create(array.length, array[0].length);
+        this.matrix = array;
+    }
     /**
      * This constructor creates a rows x columns matrix based on 
      * the parameter matrix type.
@@ -92,7 +103,7 @@ public class Matrix {
         return vector;
     }
     public double getElement(int row, int column) { return matrix[row][column]; }
-    public void setElement(int row, int column, double value) { matrix[row][column] = value; } 
+    public void setElement(int row, int column, double value) { matrix[row][column] = value; }
 
     // Methods
 
@@ -107,7 +118,7 @@ public class Matrix {
         String str = "";
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
-                str += String.format("%.1f ", matrix[row][column]);
+                str += String.format("%.3f ", matrix[row][column]);
             }
             str += "\n"; 
         }
@@ -306,9 +317,9 @@ public class Matrix {
      * 
      * @param end     the column to stop at
      * @param rref    true for rref, false for ref
-     * @return        the rank of the matrix
+     * @return        true if the matrix is singular, false if not
      */
-    public int gaussianElimination(int end) {
+    public boolean gaussianElimination(int end) {
         /**
          * Algorithm
          * ---------
@@ -318,6 +329,7 @@ public class Matrix {
          * Eliminate all elements above and below the pivot element
          */
         int pivot = 0;
+        boolean singular = false;
 
          for(int column = 0; column < end; column++) {
 
@@ -338,9 +350,111 @@ public class Matrix {
                         }
                     }
                     pivot++;
+                } else {
+                    // the matrix has a non-pivot column, then it is singular
+                    singular = true;
                 }
             }
-         }
-         return pivot;
+        }
+        rank = pivot;
+        return singular;
+    }
+
+    /**
+     * Join
+     * ----
+     * This is a helper method for the Inverse method.
+     * This method appends two matricies with the same number of rows together.
+     * 
+     * @param m    the matrix to append
+     */
+    public boolean join(Matrix m) {
+
+        // check for the same number of rows
+        if(rows != m.rows) {
+            return false;
+        }
+
+        // define new appended matrix
+        double[][] temp = new double[rows][columns + m.columns];
+
+        // clone elements from both matricies into the new matrix
+        for(int i = 0; i < rows; i++) {
+            for(int j = 0; j < columns + m.columns; j++) {
+                if(j < columns) {
+                    temp[i][j] = matrix[i][j];
+                } else {
+                    temp[i][j] = m.matrix[i][j - m.columns];
+                }
+            }
+        }
+
+        // overwrite original matrix
+        columns += m.columns;
+        matrix = temp;
+        
+        return true;
+    }
+
+    /**
+     * Submatrix
+     * ---------
+     * This method is a helper method of the Inverse method.
+     * This method returns a submatrix of the matrix based on the parameter values.
+     * 
+     * @param indices    the indices of the submatrix {rowStart, rowEnd, columnStart, columnEnd}
+     * @return           the submatrix to return.
+     */
+    public Matrix submatrix(int[] indices) {
+
+        // define new submatrix
+        double[][] temp = new double[indices[1] - indices[0]][indices[3] - indices[2]];
+
+        // set each element into new matrix
+        for(int i = indices[0]; i < indices[1]; i++) {
+            for(int j = indices[2]; j < indices[3]; j++) {
+                temp[i - indices[0]][j - indices[2]] = matrix[i][j];
+            }
+        }
+        return new Matrix(temp);
+    } 
+
+    /**
+     * Inverse
+     * -------
+     * This method returns the inverse of the matrix if it exists.
+     * 
+     * Helper Methods:
+     * @method join()
+     * 
+     * @return    the inverse matrix
+     */
+    public Matrix inverse() {
+        /**
+         * Algorithim
+         * ----------
+         * Check matrix is sqaure
+         * Define new matrix which has size nx2n
+         * Row reduce up to n columns
+         * Return the right half of the matrix as the inverse
+         */
+
+        // check matrix is square or non-singular
+        if(rows != columns || rank != columns) {
+            System.out.println("Matrix is singular or not square.");
+            return null;
+        }
+
+        // define new matrix
+        Matrix temp = clone();
+        temp.join(new Matrix(rows, columns, MatrixType.IDENTITY));
+
+        // row reduce by n columns.
+        temp.gaussianElimination(columns);
+
+        // return the right submatrix
+        int[] indices = {0, rows, columns, temp.columns};
+        Matrix inverse = temp.submatrix(indices);
+        return inverse;
     }
 }
