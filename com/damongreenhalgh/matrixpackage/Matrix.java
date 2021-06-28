@@ -1,68 +1,60 @@
 /**
- * Matrix Package for Java
- * @class Matrix
- * @description Matrix class that creates matrix objects with useful methods.
+ * @title Matrix(temp)
+ * @description Refactoring, switching to a single class to describe both
+ * the matrix and vector. Using an array as the underlying data structure to
+ * support the matrix.
  * @author Damon Greenhalgh
+ * 
+ * @todo
+ * - rref
  */
 
 package com.damongreenhalgh.matrixpackage;
 
-import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
+public class Matrix {
 
-public class Matrix{
-
-    /** FIELDS */
-
-    // Default fields 
+    // Fields
     static private int DEFAULT_SIZE = 3;
-    static private MatrixType DEFAULT_TYPE = MatrixType.DEFAULT;
 
-    protected int rows = DEFAULT_SIZE;
-    protected int columns = DEFAULT_SIZE;
-    protected MatrixType type = DEFAULT_TYPE;
+    private double[][] matrix;
+    private int rows, columns;
 
-    protected ArrayList<Vector> matrix = new ArrayList<Vector>();   
-    protected ArrayList<Integer> pivots = new ArrayList<Integer>();
-
-
-    /** CONSTRUCTORS */
-
+    // Constructors
     /**
-     * Default
-     * This is the non-arg constructor. 
+     * This is the default no-arg constructor.
+     * Creates a 3x3 0 matrix.
      */
-    public Matrix() { create(rows, columns, type); }
-
-    /** 
-     * Type
-     * This overloaded constructor creates a preset matrix based on the parameter
-     * MatrixType.
+    public Matrix() { create(DEFAULT_SIZE, DEFAULT_SIZE); }
+    /**
+     * Creates a rows x columns zero matrix
      * 
      * @param rows       the number of rows
      * @param columns    the number of columns
-     * @param type       the type of matrix
      */
-    public Matrix(int rows, int columns, MatrixType type) {
-        create(rows, columns, type);    // call helper function
-
+    public Matrix(int rows, int columns) { create(rows, columns); }
+    /**
+     * This constructor creates a rows x columns matrix based on 
+     * the parameter matrix type.
+     * 
+     * @param rows       the number of rows
+     * @param columns    the number of columns
+     * @param type       the type of matrix to create
+     */
+    public Matrix(int rows, int columns, MatrixType type) { 
+        create(rows, columns); 
         switch (type) {
             case IDENTITY: {
-                if (rows == columns) {    // must be nxn matrix
+                if (rows == columns) {    // must be a square matrix
                     for (int i = 0; i < rows; i++) {
-                        setElement(i, i, 1.0);
+                        setElement(i, i, 1);
                     }
                 }
                 break;
             } case RANDOM: {
-                for (int row = 0; row < rows; row++) {
-                    for (int column = 0; column < columns; column++) {
-                        setElement(row, column, Double.valueOf(ThreadLocalRandom.current().nextInt(-100, 100)));
-                    }
-                }
+                // random element on each element
                 break;
             } case ONE: {
-                add(1.0);
+                // add one to all elements\
                 break;
             } case DEFAULT: {
                 break;
@@ -71,384 +63,284 @@ public class Matrix{
     }
     
     /**
-     * Clone
-     * This overloaded constructor clones the parameter 
-     * matrix.
+     * Helper method to instantiate the array that represents the matrix.
      * 
-     * @param m    the matrix to clone
+     * @param rows       the number of rows
+     * @param columns    the number of columns
      */
-    public Matrix(Matrix m) {
-        create(m.getNumRows(), m.getNumColumns(), m.getMatrixType());
-
-        // Set each element
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
-                setElement(row, column, m.getElement(row, column));
-            }
-        }
-    }
-
-    /**
-     * Create
-     * This helper method creates a new rows x columns zero matrix.
-     */
-    public void create(int rows, int columns, MatrixType type) {
-        this.rows = rows;
+    private void create(int rows, int columns) {
+        this.rows= rows;
         this.columns = columns;
-        this.type = type;
-
-        for (int row = 0; row < rows; row++) {
-            matrix.add(new Vector(columns));
-        }
+        matrix = new double[rows][columns];
     }
 
-
-    /** ACCESSORS / MUTATORS */
-    
-    /**
-     * Get Row
-     * This method returns the row of the matrix based
-     * on the parameter index. Note: the first row has 
-     * index 0.
-     * 
-     * @param index the row to return
-     * @return the row vector
-     */
-    public Vector getRow(int index) { return matrix.get(index); }   
-
-    /**
-     * Get Column
-     * This method returns the column of the matrix
-     * based on the parameter index. Note: the first 
-     * column has index 0.
-     * 
-     * @param index the column to return
-     * @return the column vector
-     */                                           
-    public Vector getColumn(int index) {                                                                        
-        Vector column = new Vector(rows);
-        for (int i = 0; i < rows; i++) {
-            column.setElement(i, getElement(i, index));
-        }
-        return column;
-    }
-
-    /**
-     * Get Element
-     * This method returns the element at mat[row][column].
-     * 
-     * @param row the index of the row
-     * @param column the index of the column
-     * @return the element at row, column
-     */
-    public Double getElement(int row, int column) { return matrix.get(row).getElement(column); }
-
-    /**
-     * Set Element
-     * This method sets a new value at mat[row][column].
-     *  
-     * @param row the index of the row
-     * @param column the index of the column
-     * @param value the new value 
-     */
-    public void setElement(int row, int column, Double value) { matrix.get(row).setElement(column, value); }
-
-    /**
-     * Number of Rows
-     * This method returns the number of rows of the
-     * matrix.
-     * 
-     * @return the number of rows
-     */
+    // Accesors/Mutators
     public int getNumRows() { return rows; }
-    
-    /**
-     * Number of Columns
-     * This method returns the number of columns 
-     * of the matrix.
-     * 
-     * @return the number of columns
-     */
     public int getNumColumns() { return columns; }
-
-    /**
-     * Get Matrix Type
-     * This method returns the matrix type of 
-     * the matrix.
-     * 
-     * @return the type of matrix
-     */
-    public MatrixType getMatrixType() {
-        return type;
+    public Matrix getRow(int index) {
+        Matrix vector = new Matrix(1, columns, MatrixType.DEFAULT);
+        for (int column = 0; column < columns; column++) {
+            vector.setElement(0, column, getElement(index, column));
+        }
+        return vector;
     }
+    public Matrix getColumn(int index) {
+        Matrix vector = new Matrix(rows, 1, MatrixType.DEFAULT);
+        for (int row = 0; row < rows; row++) {
+            vector.setElement(row, 0, getElement(row, index));
+        }
+        return vector;
+    }
+    public double getElement(int row, int column) { return matrix[row][column]; }
+    public void setElement(int row, int column, double value) { matrix[row][column] = value; } 
 
+    // Methods
 
-    /** METHODS */
-
-    /**
+    /** 
      * String Representation
-     * This method returns a string representation of 
-     * the matrix.
+     * ---------------------
+     * This method returns a string representation of the matrix object.
      * 
-     * @return str the string representation
+     * @return str    the string to return
      */
     public String toString() {
         String str = "";
-        for (int i = 0; i < rows; i++) {
-            str += getRow(i).toString() + "\n";
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                str += String.format("%.1f ", matrix[row][column]);
+            }
+            str += "\n"; 
         }
         return str;
     }
 
     /**
-     * Addition
-     * This method adds the parameter scalar to the matrix.
+     * Clone
+     * -----
+     * This method clones the matrix.
      * 
-     * @param d    the scalar to add.
+     * @return clone    the cloned matrix
      */
-    public void add(Double d) {
+    public Matrix clone() {
+        Matrix clone = new Matrix(rows, columns);
         for (int row = 0; row < rows; row++) {
-            getRow(row).add(d);
-        }
-    }
-    /**
-     * Addition
-     * This method adds the parameter matrix with this object.
-     * 
-     * @param m    the matrix to add.
-     */
-    public void add(Matrix m) {
-        for (int row = 0; row < rows; row++) {
-            getRow(row).add(m.getRow(row));
-        }
-    }
-
-    /**
-     * Scalar Multiplication
-     * This overloaded method applies scalar multiplication to this
-     * object.
-     * 
-     * @param val    the scalar value
-     */
-    public void mult(Double val) {
-        for (int row = 0; row < rows; row++) {
-            getRow(row).mult(val);
-        }
-    }
-    /**
-     * Vector Multiplication
-     * This overloaded method applies vector multiplication to this
-     * object.
-     * 
-     * @param v           the vector to multiply with
-     * @return result     the product vector
-     */
-    public Vector mult(Vector v) {
-        if (columns == v.getSize()) {    // check mxn * nxl matrix
-            Vector result = new Vector(rows);
-
-            for (int row = 0; row < rows; row++) {
-                result.setElement(row, getRow(row).dot(v));
-            } 
-            return result;
-        }
-        return null;
-    }
-    /**
-     * Matrix Multiplication
-     * This overloaded method applies matrix multiplication to
-     * this object.
-     * 
-     * @param m       the matrix to multiply
-     * @return mat    the product matrix
-     */
-    public Matrix mult(Matrix m) {
-        if (columns == m.getNumRows()) {                           // must be n x m * m x l
-            Matrix mat = new Matrix(rows, m.getNumColumns(), MatrixType.DEFAULT);
-            for (int i = 0; i < mat.getNumRows(); i++) {
-                for (int j = 0; j < mat.getNumColumns(); j++) {    // for each element in the new mat matrix 
-                    Vector column = m.getColumn(j);                // get column matrix of parameter
-                    Vector row = getRow(i);                        // get row matrix of object
-                    mat.setElement(i, j, row.dot(column));         // dot the rows and columns to get the new element
-                }
+            for (int column = 0; column < columns; column++) {
+                clone.setElement(row, column, matrix[row][column]);
             }
-            return mat;
-        } 
-        return null;
+        }
+        return clone;
     }
 
     /**
      * Transpose
-     * This method returns a new matrix, which is the transpose 
-     * of the object.
+     * ---------
+     * This method returns the tranpose of the matrix.
      * 
-     * @return the transpose
+     * @return transpose    the transpose
      */
     public Matrix transpose() {
-        Matrix transpose = new Matrix(columns, rows, MatrixType.DEFAULT);            // create new matrix
-        for (int i = 0; i < columns; i++) {                      
-            for (int j = 0; j < rows; j++) {                     // iterate through each value 
-                transpose.setElement(j, i, getElement(i, j));    // set the value of trans[i, j] = mat[j, i]
+        Matrix transpose = new Matrix(columns, rows);
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                transpose.setElement(row, column, matrix[column][row]);
             }
         }
         return transpose;
     }
 
     /**
-     * Power
-     * This method returns a new matrix, which is the result 
-     * of the matrix to the parameter power.
+     * Matrix Multiplication
+     * ---------------------
+     * This method multiplies two matricies together.
+     * Time complexity of O(n^3) where n = max(i, j)
      * 
-     * @param power the power of the matrix
-     * @return the result
+     * @param m    the second operand
+     * @return     the product matrix
      */
-    public Matrix pow(int power) {
-        Matrix pow = this;
-        for (int i = 0; i < power - 1; i++) {
-            pow = mult(pow);
-        }
-        return pow;
-    }
+    public Matrix multiply(Matrix m) {
+        Matrix product = new Matrix(rows, m.columns, MatrixType.DEFAULT);
+        
+        if (columns == m.getNumRows()) {    // validate the operation
+            for (int row = 0; row < product.rows; row++) {
+                for (int column = 0; column < product.columns; column++) {
 
+                    double sum = 0;
+                    for (int i = 0; i < columns; i++) {
+                        sum += getElement(row, i) * m.getElement(i, column);
+                    }
+                    product.setElement(row, column, sum);
+                }
+            }
+        }
+        return product;
+    }
     /**
-     * Eliminate
-     * This method emulates row operations for Gaussian Elimination.
-     * The second parameter row is overwritten.
+     * Scalar Multiplication
+     * ---------------------
+     * This method applies scalar multiplication to the matrix.
+     * Time complexity of O(n^2)
      * 
-     * @param idx1 the first row index
-     * @param idx2 the second row index
-     * @param mult the factor
+     * @param value    the scalar value
      */
-    public void eliminate(int idx1, int idx2, double mult) {
-        Double val1, val2;
-        if (mult != 0) {                                     // must be multiplied by a non-zero value
-            for (int i = 0; i < columns; i++) {
-                val1 = getRow(idx1).getElement(i) * mult;    // operand 1
-                val2 = getRow(idx2).getElement(i);           // operand 2
-                getRow(idx2).setElement(i, val1 + val2);
+    public void multiply(double value) {
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                setElement(row, column, getElement(row, column) * value);
             }
         }
     }
 
-    /**
-     * Reduced Row Echelon Form (RREF)
-     * This method reduces the matrix to Reduced Row Echelon Form, by method
-     * of Gaussian Elimination.
+    /** 
+     * Matrix Addition
+     * ---------------
+     * This method applies matrix addition.
      * 
-     * @param index the column to stop row reducing.
+     * @param m    the matrix to add
      */
-    public void rref(int index) {
-        /** Algorithm
-         *  ---------
-         *  - Iterate through each column of the matrix.
-         *  - Find the pivot of the column vector if it exists.
-         *  - Eliminate every non-pivot entry of the column.
-         */
-
-        // Iterate through each column
-        for (int columnIndex = 0; columnIndex < index; columnIndex++) {
-
-            // Find the pivot
-            Vector column = getColumn(columnIndex);
-            int pivotIndex = column.getPivot(pivots); 
-            
-            // Check there exists a pivot for the column
-            if (pivotIndex != -1) {
-
-                // Add pivotIndex to pivots
-                pivots.add(pivotIndex);
-
-                // Set the pivot element to 1 through row operation
-                Vector pivotRow = getRow(pivotIndex);
-                Double pivotElement = pivotRow.getElement(columnIndex);
-                pivotRow.mult(1/pivotElement);
-                
-                // Eliminate each non-pivot element in the column
-                for (int rowIndex = 0; rowIndex < rows; rowIndex++) {
-
-                    // Do not eliminate pivot
-                    if (rowIndex != pivotIndex) {    
-                        Double mult = column.getElement(rowIndex);
-                        eliminate(pivotIndex, rowIndex, -mult);
-                        
-                    }
-                    
+    public void add(Matrix m) {
+        if (rows == m.rows && columns == m.columns) {
+            for (int row = 0; row < rows; row++) {
+                for (int column = 0; column < columns; column++) {
+                    matrix[row][column] += m.getElement(row, column);
                 }
             }
         }
     }
 
-    /** 
-     * Join
-     * This method appends the parameter matrix to the object. For example
-     * adding a 3x3 matrix to a 3x5 matrix will result in a 3x8 matrix.
+    /**
+     * Scalar Addition
+     * ---------------
+     * This method adds a scalar to every element of the matrix
      * 
-     * @param m    the matrix to append.
+     * @param value    the scalar value
      */
-    public void append(Matrix m) {
-        if (m.getNumRows() == rows) {
-            columns += m.getNumColumns();
-            for(int i = 0; i < m.getNumRows(); i++) {
-                getRow(i).append(m.getRow(i));
+    public void add(double value) {
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                matrix[row][column] += value;
             }
         }
     }
-    /**
-     * Join
-     * This method append the parameter vector to the object. For example
-     * adding a vector to a 3x3 matrix gives a 3x4 matrix.
+    
+    /** 
+     * Power
+     * -----
+     * This method returns a new matrix, which is the result of the
+     * matrix to the parameter power.
      * 
-     * @param v    the vector to append
+     * @param value      the power to raise
+     * @return result    the result
      */
-    public void append(Vector v) {
-        if (v.getSize() == rows) {
-            columns++;                                 // increase the number of columns
-            for (int i = 0; i < v.getSize(); i++) {    // for each row vector, append new value
-                getRow(i).append(v.getElement(i));
-            }
+    public Matrix power(int value) {
+        Matrix power = this;
+        while (value - 1 > 0) {
+            power = multiply(power);
+            value--;
+        }
+        return power;
+    }
+
+    /**
+     * Swap
+     * ----
+     * This is a helper method for the GaussianElimination method.
+     * This method swaps two rows in the matrix.
+     * 
+     * @param row1    the index of the first row
+     * @param row2    the index of the second row
+     */
+    private void swap(int row1, int row2) {
+        double temp;
+        for(int i = 0; i < columns; i++) {
+            temp = matrix[row1][i];
+            matrix[row1][i] = matrix[row2][i];
+            matrix[row2][i] = temp;
         }
     }
 
-    /** 
-     * Solve 
-     * This method returns a vector which is a solution of the matrix
-     * in the formAx = b.
+    /**
+     * Multiply
+     * --------
+     * This is a helper method for the GaussianElimination method.
+     * This method multiplies a row by the parameter value.
      * 
-     *  @param b    the result of the product
+     * @param row      the index of the row to multiply
+     * @param value    the value to multiply the row by
      */
-    public Vector solve(Vector v) {
-        /** Algorithim
-         *  ----------
-         *  - Check parameter vector is the same length as the number columns.
-         *  - Join the vector with the matrix.
-         *  - RREF the matrix, not including the final column.
-         *  - Return the final column as the solution of the matrix
+    private void multiply(int row, double value) {
+        for(int i = 0; i < columns; i++) {
+            matrix[row][i] = matrix[row][i] * value;
+        }
+    }
+
+    /**
+     * Eliminate
+     * ---------
+     * This is a helper method for the GaussianElimination method.
+     * This method eliminates elements below a pivot point given by the formula
+     * row1 = row1 - a*row2, where a is a double.
+     * 
+     * @param row1      the index of the first row
+     * @param row2      the index of the second row
+     * @param column    the index of the pivot
+     */
+    private void eliminate(int row1, int row2, int column) {
+        double factor = matrix[row1][column];
+        for(int i = 0; i < columns; i++){
+            matrix[row1][i] -= factor * matrix[row2][i];
+        }
+    }
+
+    /**
+     * Gaussian Elimination (rref)
+     * ---------------------------
+     * This method reduces the matrix to Reduced Row Echelon Form through the use
+     * of Gaussian Elimination.
+     * 
+     * Time Complexity is O(n^3)
+     * 
+     * Helper methods:
+     * @method swap(int row1, int row2)         
+     * @method multiply(int row, double value)     
+     * @method eliminate(int row1, int row2, int column)    
+     * 
+     * @param end     the column to stop at
+     * @param rref    true for rref, false for ref
+     * @return        the rank of the matrix
+     */
+    public int gaussianElimination(int end) {
+        /**
+         * Algorithm
+         * ---------
+         * Iterate through each column of the matrix
+         * Find the pivot element of the column if it exists
+         * Swap the pivot row to the correct position
+         * Eliminate all elements above and below the pivot element
          */
-        Matrix clone = new Matrix(this);
-        clone.append(v);
-        clone.rref(columns);
-        Vector b = new Vector(rows);
-        System.out.println(clone);
-        for (int i = 0; i < rows; i++) {
-            b.setElement(i, clone.getElement(i, rows));
-        }
-        return b;
-    }
+        int pivot = 0;
 
-    /**
-     * Rank
-     * This method returns the rank of the matrix.
-     * 
-     * @return    the rank of the matrix.
-     */
-    public int rank() {
-        // Clone matrix
-        Matrix clone = new Matrix(this);
+         for(int column = 0; column < end; column++) {
 
-        // Row reduce clone
-        clone.rref(columns);
+             // find pivot
+             for(int row = 0; row < rows; row++) {
+                if(!(Math.abs(matrix[row][column])< 0.001) && row >= pivot) {
 
-        // Return the number of pivots
-        return clone.pivots.size();
+                    // swap to correct position
+                    swap(row, pivot);
+                    
+                    // normalize the pivot row
+                    multiply(pivot, 1/matrix[pivot][column]);
+
+                    // eliminate below and above the pivot
+                    for(int j = 0; j < rows; j++) {
+                        if(j != pivot) {
+                            eliminate(j, pivot, column);
+                        }
+                    }
+                    pivot++;
+                }
+            }
+         }
+         return pivot;
     }
 }
