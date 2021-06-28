@@ -1,8 +1,6 @@
 /**
- * @title Matrix(temp)
- * @description Refactoring, switching to a single class to describe both
- * the matrix and vector. Using an array as the underlying data structure to
- * support the matrix.
+ * @title Matrix
+ * @description This class creates a Matrix object.
  * @author Damon Greenhalgh
  * 
  * @todo
@@ -104,7 +102,7 @@ public class Matrix {
     }
     public double getElement(int row, int column) { return matrix[row][column]; }
     public void setElement(int row, int column, double value) { matrix[row][column] = value; }
-
+    public int getRank() { return rank; }
     // Methods
 
     /** 
@@ -182,8 +180,9 @@ public class Matrix {
                     product.setElement(row, column, sum);
                 }
             }
+            return product;
         }
-        return product;
+        return null;
     }
     /**
      * Scalar Multiplication
@@ -319,17 +318,16 @@ public class Matrix {
      * @param rref    true for rref, false for ref
      * @return        true if the matrix is singular, false if not
      */
-    public boolean gaussianElimination(int end) {
+    public void gaussianElimination(int end) {
         /**
          * Algorithm
          * ---------
-         * Iterate through each column of the matrix
-         * Find the pivot element of the column if it exists
-         * Swap the pivot row to the correct position
-         * Eliminate all elements above and below the pivot element
+         * - Iterate through each column of the matrix
+         * - Find the pivot element of the column if it exists
+         * - Swap the pivot row to the correct position
+         * - Eliminate all elements above and below the pivot element
          */
         int pivot = 0;
-        boolean singular = false;
 
          for(int column = 0; column < end; column++) {
 
@@ -350,14 +348,10 @@ public class Matrix {
                         }
                     }
                     pivot++;
-                } else {
-                    // the matrix has a non-pivot column, then it is singular
-                    singular = true;
-                }
-            }
+                } 
+            } 
         }
         rank = pivot;
-        return singular;
     }
 
     /**
@@ -372,6 +366,7 @@ public class Matrix {
 
         // check for the same number of rows
         if(rows != m.rows) {
+            System.out.println("The two matricies have different dimensions.");
             return false;
         }
 
@@ -392,7 +387,7 @@ public class Matrix {
         // overwrite original matrix
         columns += m.columns;
         matrix = temp;
-        
+
         return true;
     }
 
@@ -433,18 +428,17 @@ public class Matrix {
         /**
          * Algorithim
          * ----------
-         * Check matrix is sqaure
-         * Define new matrix which has size nx2n
-         * Row reduce up to n columns
-         * Return the right half of the matrix as the inverse
+         * - Check matrix is sqaure
+         * - Define new matrix which has size nx2n
+         * - Row reduce up to n columns
+         * - Return the right half of the matrix as the inverse
          */
 
-        // check matrix is square or non-singular
-        if(rows != columns || rank != columns) {
-            System.out.println("Matrix is singular or not square.");
+        // check matrix is square
+        if(rows != columns) {
+            System.out.println("Matrix is not sqaure.");
             return null;
         }
-
         // define new matrix
         Matrix temp = clone();
         temp.join(new Matrix(rows, columns, MatrixType.IDENTITY));
@@ -452,9 +446,43 @@ public class Matrix {
         // row reduce by n columns.
         temp.gaussianElimination(columns);
 
+        // check if matrix is singular
+        if(temp.getRank() != columns) {
+            System.out.println("Matrix is singular");
+            return null;
+        }
+
         // return the right submatrix
         int[] indices = {0, rows, columns, temp.columns};
         Matrix inverse = temp.submatrix(indices);
         return inverse;
+    }
+
+    /**
+     * Solve
+     * -----
+     * This method solves a system of linear equations given by the parameter.
+     * The formula is Ax = b, where A is the matrix, b is the product vector, and 
+     * x is the vector to solve for.
+     * 
+     * @param b     the product vector
+     * @return x    the vector to solve for
+     */
+    public Matrix solve(Matrix b) {
+        /**
+         * Algorithim
+         * ----------
+         * - Get the inverse of A
+         * - Left multiply b by A^-1
+         * - Return the product
+         */
+
+        // get inverse
+        Matrix inverse = inverse();
+
+        // left multiply b by A^-1
+        Matrix x = inverse.multiply(b);
+
+        return x;
     }
 }
