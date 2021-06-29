@@ -1,14 +1,18 @@
 /**
- * @title Matrix
+ * @title Matrix Class
  * @description This class creates a Matrix object.
  * @author Damon Greenhalgh
  * 
  * @todo
- * - solution
  * - determinant
+ * - eigenvalues
+ * - eigenvectors
  */
 
 package com.damongreenhalgh.matrixpackage;
+
+import java.lang.Math.*;
+import java.util.Random;
 
 public class Matrix {
 
@@ -61,9 +65,17 @@ public class Matrix {
                 break;
             } case RANDOM: {
                 // random element on each element
+                Random r = new Random();
+                for(int i = 0; i < rows; i++) {
+                    for(int j = 0; j < columns; j++) {
+                        //matrix[i][j] = (r.nextDouble() - 0.5) * 100;
+                        matrix[i][j] = r.nextInt(100) - 50;
+                    }
+                }
+
                 break;
             } case ONE: {
-                // add one to all elements\
+                add(1);
                 break;
             } case DEFAULT: {
                 break;
@@ -115,10 +127,12 @@ public class Matrix {
     public String toString() {
         String str = "";
         for (int row = 0; row < rows; row++) {
+            str += "[ ";
             for (int column = 0; column < columns; column++) {
                 str += String.format("%.3f ", matrix[row][column]);
             }
-            str += "\n"; 
+            str += "]\n"; 
+
         }
         return str;
     }
@@ -379,7 +393,7 @@ public class Matrix {
                 if(j < columns) {
                     temp[i][j] = matrix[i][j];
                 } else {
-                    temp[i][j] = m.matrix[i][j - m.columns];
+                    temp[i][j] = m.matrix[i][j - columns];
                 }
             }
         }
@@ -421,6 +435,7 @@ public class Matrix {
      * 
      * Helper Methods:
      * @method join()
+     * @method submatrix()
      * 
      * @return    the inverse matrix
      */
@@ -484,5 +499,56 @@ public class Matrix {
         Matrix x = inverse.multiply(b);
 
         return x;
+    }
+
+    /**
+     * Determinant
+     * -----------
+     * This method returns the determinant of the matrix.
+     */
+    public Double determinant() {
+        /**
+         * Algorithim
+         * ----------
+         * - Check that it is a sqaure matrix
+         * - Apply cofactor expansion along the first row
+         * - Create right and left submatrices
+         * - Recursively call the determinant method for submatrices
+         */
+        double det = 0;
+        Matrix sub;
+
+        // check the matrix is square
+        if(rows != columns) {
+            System.out.println("The matrix is not square.");
+            return null;
+        }
+
+        // base cases
+        // if matrix is 1x1;
+        if(rows == 1) {
+            return matrix[0][0];
+        }
+
+        // if the matrix is 2x2
+        if(rows == 2) {
+            return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+        }
+
+        // otherwise recursively call itself over the submatrices
+        for(int i = 0; i < columns; i++) {
+
+            // create left and right submatrices and append them together
+            int[] coord1 = {1, rows, 0, i};
+            int[] coord2 = {1, rows, i + 1, columns};
+            Matrix left = submatrix(coord1);
+            Matrix right = submatrix(coord2);
+            sub = left;
+            sub.join(right);
+
+            // recursively call itself on the submatrix
+            det += matrix[0][i] * Math.pow(-1, i) * sub.determinant();
+        }
+        return det;
     }
 }
