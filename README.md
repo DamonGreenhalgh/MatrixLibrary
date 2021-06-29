@@ -1,4 +1,4 @@
-# MatrixLibrary
+# Matrix Package for Java
 This Java package implements the matrix mathematical structure.  
 
 ## Matrix Class
