@@ -2,7 +2,41 @@
 This package implements the matrix mathematical structure for Java.  
 
 ## Matrix Class
-Below are the following methods that have been implemented in the Matrix.java file.
+
+### Fields
+The following fields are used in the Matrix.java class.
+
+Type | Name | Description
+---- | ----- | -----------
+`double[][]` | `matrix` | The underlying data structure used to represent the matrix structure.
+`int` | `rows` | The number of rows of the matrix.
+`int` | `columns` | The number of columns of the matrix.
+`int` | `rank` | The rank of the matrix.
+
+### Constructors
+The following constructors can be used to instantiate the matrix object. 
+
+Constructor | Description
+----------- | -----------
+`Matrix()` | This default non-arg constructor, instantiates a 3x3 zero matrix.
+`Matrix(int rows, int columns)` | This constructor creates a rows x columns zero matrix.
+`Matrix(int rows, int columns, MatrixType type)` | This constructor creates a rows x columns preset matrix determined by the parameter type.
+`Matrix(double[][] array)` | This constructor creates an array based on the parameter two-dimensional array.
+
+### Accessors/Mutators
+The following methods can be used to access and modify certain fields of the matrix object.
+Accessor/Mutator | Return | Description
+---------------- | ------ | -----------
+`getNumRows()` | int | Returns the rows field.
+`getNumColumns()` | int | Returns the columns field.
+`getRow(int index)` | Matrix | Returns the row of a matrix at the given index.
+`getColumn(int index)` | Matrix | Returns the column of the matrix at the given index.
+`getElement(int row, int column)` | double | Returns the element at the given parameter index.
+`setElement`(int row, int column, int value) | void | Sets the element at the parameter index to the new parameter value.
+`getRank()` | int | Returns the rank field.
+
+### Methods
+Below are the following methods that have been implemented in the Matrix.java class.
 
 Method | Return | Description
 ------ | ------ | -----------
@@ -24,6 +58,7 @@ Method | Return | Description
 ## MatrixType Enum
 Below are the following enums for the MatrixType.enum file.
 
+### Enums
 Enum | Description
 ---- | -----------
 `DEFAULT` | nxm zero matrix.
