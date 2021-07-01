@@ -1,8 +1,6 @@
 /**
- * Matrix Package for Java
  * @enum MatrixType
- * @description Enumeration types to hold preset matricies.
- * 
+ * @description Enumeration type to hold preset matrices.
  * @author Damon Greenhalgh
  */
 

@@ -1,34 +1,30 @@
 /**
- * @title Matrix Class
+ * @class Matrix
  * @description This class creates a Matrix object.
  * @author Damon Greenhalgh
- * 
- * @todo
- * - determinant
- * - eigenvalues
- * - eigenvectors
  */
 
 package com.damongreenhalgh.matrixpackage;
 
-import java.lang.Math.*;
 import java.util.Random;
 
 public class Matrix {
 
-    // Fields
-    static private int DEFAULT_SIZE = 3;
+    /** FIELDS */
 
+    static private int DEFAULT_SIZE = 3;
     private double[][] matrix;
     private int rows, columns;
     private int rank;
 
-    // Constructors
+    /** CONSTRUCTORS */
+
     /**
      * This is the default no-arg constructor.
      * Creates a 3x3 0 matrix.
      */
     public Matrix() { create(DEFAULT_SIZE, DEFAULT_SIZE); }
+
     /**
      * Creates a rows x columns zero matrix
      * 
@@ -36,18 +32,20 @@ public class Matrix {
      * @param columns    the number of columns
      */
     public Matrix(int rows, int columns) { create(rows, columns); }
+
     /**
-     * Creates a matrix based on a 2-dimensional array.
+     * Creates a matrix object based on a 2-dimensional array.
      * 
-     * @param array
+     * @param array    the 2-dimensional array to build the matrix around
      */
     public Matrix(double[][] array) {
         create(array.length, array[0].length);
         this.matrix = array;
     }
+
     /**
-     * This constructor creates a rows x columns matrix based on 
-     * the parameter matrix type.
+     * This constructor creates a rows x columns preset matrix based on the
+     * parameter type.
      * 
      * @param rows       the number of rows
      * @param columns    the number of columns
@@ -63,20 +61,21 @@ public class Matrix {
                     }
                 }
                 break;
+
             } case RANDOM: {
-                // random element on each element
+                // random integer for each element in the matrix
                 Random r = new Random();
                 for(int i = 0; i < rows; i++) {
                     for(int j = 0; j < columns; j++) {
-                        //matrix[i][j] = (r.nextDouble() - 0.5) * 100;
                         matrix[i][j] = r.nextInt(100) - 50;
                     }
                 }
-
                 break;
+
             } case ONE: {
                 add(1);
                 break;
+
             } case DEFAULT: {
                 break;
             }
@@ -118,17 +117,17 @@ public class Matrix {
     // Methods
 
     /** 
-     * String Representation
-     * ---------------------
+     * ToString
+     * --------
      * This method returns a string representation of the matrix object.
      * 
      * @return str    the string to return
      */
     public String toString() {
         String str = "";
-        for (int row = 0; row < rows; row++) {
+        for(int row = 0; row < rows; row++) {
             str += "[ ";
-            for (int column = 0; column < columns; column++) {
+            for(int column = 0; column < columns; column++) {
                 str += String.format("%.3f ", matrix[row][column]);
             }
             str += "]\n"; 
@@ -141,6 +140,7 @@ public class Matrix {
      * Clone
      * -----
      * This method clones the matrix.
+     * Time complexity of O(n^2)
      * 
      * @return clone    the cloned matrix
      */
@@ -148,7 +148,7 @@ public class Matrix {
         Matrix clone = new Matrix(rows, columns);
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
-                clone.setElement(row, column, matrix[row][column]);
+                clone.matrix[row][column] = matrix[row][column];
             }
         }
         return clone;
@@ -158,14 +158,15 @@ public class Matrix {
      * Transpose
      * ---------
      * This method returns the tranpose of the matrix.
+     * Time complexity of O(n^2)
      * 
-     * @return transpose    the transpose
+     * @return transpose    the transpose matrix
      */
     public Matrix transpose() {
         Matrix transpose = new Matrix(columns, rows);
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
-                transpose.setElement(row, column, matrix[column][row]);
+                transpose.matrix[row][column] = matrix[column][row];
             }
         }
         return transpose;
@@ -174,34 +175,43 @@ public class Matrix {
     /**
      * Matrix Multiplication
      * ---------------------
-     * This method multiplies two matricies together.
-     * Time complexity of O(n^3) where n = max(i, j)
+     * This method returns a new matrix, which is the product of the matrix and the
+     * parameter. The matrix is right multiplied by the parameter matrix m.
+     * Time complexity of O(n^3)
      * 
-     * @param m    the second operand
-     * @return     the product matrix
+     * @param m            the second operand
+     * @return product     the product matrix
      */
     public Matrix multiply(Matrix m) {
-        Matrix product = new Matrix(rows, m.columns, MatrixType.DEFAULT);
-        
-        if (columns == m.getNumRows()) {    // validate the operation
-            for (int row = 0; row < product.rows; row++) {
-                for (int column = 0; column < product.columns; column++) {
 
-                    double sum = 0;
-                    for (int i = 0; i < columns; i++) {
-                        sum += getElement(row, i) * m.getElement(i, column);
-                    }
-                    product.setElement(row, column, sum);
-                }
-            }
-            return product;
+        Matrix product = new Matrix(rows, m.columns, MatrixType.DEFAULT);
+        double sum = 0;
+
+        // validate the operation
+        if (columns != m.getNumRows()) {    
+            return null;
         }
-        return null;
+
+        for (int row = 0; row < product.rows; row++) {
+            for (int column = 0; column < product.columns; column++) {
+
+                // reset sum
+                sum = 0;
+
+                // compute sum
+                for (int i = 0; i < columns; i++) {
+                    sum += matrix[row][i] * m.matrix[i][column];
+                }
+                product.matrix[row][column] = sum;
+            }
+        }
+        return product;
     }
+
     /**
      * Scalar Multiplication
      * ---------------------
-     * This method applies scalar multiplication to the matrix.
+     * This method multiplies the matrix with the scalar parameter value.
      * Time complexity of O(n^2)
      * 
      * @param value    the scalar value
@@ -209,7 +219,7 @@ public class Matrix {
     public void multiply(double value) {
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
-                setElement(row, column, getElement(row, column) * value);
+                matrix[row][column] = matrix[row][column] * value;
             }
         }
     }
@@ -217,15 +227,19 @@ public class Matrix {
     /** 
      * Matrix Addition
      * ---------------
-     * This method applies matrix addition.
+     * This method adds the parameter matrix to the matrix.
+     * Time complexity of O(n^2)
      * 
      * @param m    the matrix to add
      */
     public void add(Matrix m) {
+        
+        // validate the operation
         if (rows == m.rows && columns == m.columns) {
+
             for (int row = 0; row < rows; row++) {
                 for (int column = 0; column < columns; column++) {
-                    matrix[row][column] += m.getElement(row, column);
+                    matrix[row][column] += m.matrix[row][column];
                 }
             }
         }
@@ -234,7 +248,8 @@ public class Matrix {
     /**
      * Scalar Addition
      * ---------------
-     * This method adds a scalar to every element of the matrix
+     * This method adds the parameter scalar value to every element of the matrix.
+     * Time complexity of O(n^2)
      * 
      * @param value    the scalar value
      */
@@ -249,8 +264,12 @@ public class Matrix {
     /** 
      * Power
      * -----
-     * This method returns a new matrix, which is the result of the
-     * matrix to the parameter power.
+     * This method returns a new matrix, which is the result of the matrix 
+     * to the power of the parameter value.
+     * Time Complexity of O(n^3)
+     * 
+     * Helper Method/s:
+     * @method multiply(Matrix m) 
      * 
      * @param value      the power to raise
      * @return result    the result
@@ -267,8 +286,8 @@ public class Matrix {
     /**
      * Swap
      * ----
-     * This is a helper method for the GaussianElimination method.
-     * This method swaps two rows in the matrix.
+     * This method swaps two rows in the matrix, determined by the parameter indexes.
+     * Time Complexity is O(n)
      * 
      * @param row1    the index of the first row
      * @param row2    the index of the second row
@@ -283,10 +302,10 @@ public class Matrix {
     }
 
     /**
-     * Multiply
-     * --------
-     * This is a helper method for the GaussianElimination method.
+     * Row Multiply
+     * ------------
      * This method multiplies a row by the parameter value.
+     * Time Complexity of O(n)
      * 
      * @param row      the index of the row to multiply
      * @param value    the value to multiply the row by
@@ -300,9 +319,9 @@ public class Matrix {
     /**
      * Eliminate
      * ---------
-     * This is a helper method for the GaussianElimination method.
-     * This method eliminates elements below a pivot point given by the formula
-     * row1 = row1 - a*row2, where a is a double.
+     * This method subtracts a row multiple of another row in the matrix such that
+     * the resulting sum will be 0. Given by formula: row1 = row1 - a * row2 = 0, 
+     * where a is a scalar value.
      * 
      * @param row1      the index of the first row
      * @param row2      the index of the second row
@@ -316,23 +335,20 @@ public class Matrix {
     }
 
     /**
-     * Gaussian Elimination (rref)
-     * ---------------------------
+     * EchelonForm (rref)
+     * ------------------
      * This method reduces the matrix to Reduced Row Echelon Form through the use
      * of Gaussian Elimination.
+     * Time Complexity of O(n^3)
      * 
-     * Time Complexity is O(n^3)
-     * 
-     * Helper methods:
+     * Helper Method/s:
      * @method swap(int row1, int row2)         
      * @method multiply(int row, double value)     
      * @method eliminate(int row1, int row2, int column)    
      * 
-     * @param end     the column to stop at
-     * @param rref    true for rref, false for ref
-     * @return        true if the matrix is singular, false if not
+     * @param end     the column to stop row reducing
      */
-    public void gaussianElimination(int end) {
+    public void echelonForm(int end) {
         /**
          * Algorithm
          * ---------
@@ -371,10 +387,11 @@ public class Matrix {
     /**
      * Join
      * ----
-     * This is a helper method for the Inverse method.
-     * This method appends two matricies with the same number of rows together.
+     * This method appends two matrices together.
+     * Time Complexity of O(n^2)
      * 
      * @param m    the matrix to append
+     * @return     true if successful, false otherwise
      */
     public boolean join(Matrix m) {
 
@@ -384,7 +401,7 @@ public class Matrix {
             return false;
         }
 
-        // define new appended matrix
+        // define the result matrix
         double[][] temp = new double[rows][columns + m.columns];
 
         // clone elements from both matricies into the new matrix
@@ -408,8 +425,8 @@ public class Matrix {
     /**
      * Submatrix
      * ---------
-     * This method is a helper method of the Inverse method.
      * This method returns a submatrix of the matrix based on the parameter values.
+     * Time Complexity of O(n^2)
      * 
      * @param indices    the indices of the submatrix {rowStart, rowEnd, columnStart, columnEnd}
      * @return           the submatrix to return.
@@ -432,10 +449,12 @@ public class Matrix {
      * Inverse
      * -------
      * This method returns the inverse of the matrix if it exists.
+     * Time Complexity of O(n^3)
      * 
-     * Helper Methods:
-     * @method join()
-     * @method submatrix()
+     * Helper Method/s:
+     * @method echlonForm(int end)
+     * @method join(Matrix m)
+     * @method submatrix(int[] indices)
      * 
      * @return    the inverse matrix
      */
@@ -459,10 +478,10 @@ public class Matrix {
         temp.join(new Matrix(rows, columns, MatrixType.IDENTITY));
 
         // row reduce by n columns.
-        temp.gaussianElimination(columns);
+        temp.echelonForm(columns);
 
         // check if matrix is singular
-        if(temp.getRank() != columns) {
+        if(temp.rank != columns) {
             System.out.println("Matrix is singular");
             return null;
         }
@@ -479,6 +498,11 @@ public class Matrix {
      * This method solves a system of linear equations given by the parameter.
      * The formula is Ax = b, where A is the matrix, b is the product vector, and 
      * x is the vector to solve for.
+     * Time Complexity of O(n^3)
+     * 
+     * Helper Method/s:
+     * @method inverse()
+     * @method multiply(Matrix m)
      * 
      * @param b     the product vector
      * @return x    the vector to solve for
@@ -504,7 +528,15 @@ public class Matrix {
     /**
      * Determinant
      * -----------
-     * This method returns the determinant of the matrix.
+     * This method returns the determinant of the matrix, if it exists. 
+     * Time Complexity of O(n!)
+     * 
+     * Helper Method/s:
+     * @method submatrix(int[] indices)
+     * @method join(Matrix m)
+     * @method determinant()
+     * 
+     * 
      */
     public Double determinant() {
         /**
@@ -512,7 +544,7 @@ public class Matrix {
          * ----------
          * - Check that it is a sqaure matrix
          * - Apply cofactor expansion along the first row
-         * - Create right and left submatrices
+         * - Create right and left submatrices and join them together
          * - Recursively call the determinant method for submatrices
          */
         double det = 0;
