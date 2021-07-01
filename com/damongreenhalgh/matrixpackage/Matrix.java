@@ -509,7 +509,7 @@ public class Matrix {
      */
     public Matrix solve(Matrix b) {
         /**
-         * Algorithim
+         * Algorithm
          * ----------
          * - Get the inverse of A
          * - Left multiply b by A^-1
@@ -540,7 +540,7 @@ public class Matrix {
      */
     public Double determinant() {
         /**
-         * Algorithim
+         * Algorithm
          * ----------
          * - Check that it is a sqaure matrix
          * - Apply cofactor expansion along the first row
