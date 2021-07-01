@@ -1,4 +1,4 @@
-# MatrixLibrary
+# Matrix Package for Java
 This Java package implements the matrix mathematical structure.  
 
 ## Matrix Class
@@ -17,5 +17,6 @@ Method | Description
 `submatrix` | This method returns a submatrix of the matrix determined by the parameter.
 `inverse` | This method returns the inverse of the matrix.
 `solve` | This method solves a system of linear equations in the form Ax = b, where A is the matrix, b is the parameter vector and x is the vector to solve. The return value is the vector x. 
+`determinant` | This method returns the determinant of the matrix, if it exists.
 
 
